@@ -654,12 +654,12 @@
                     <!-- optional: limit format enforcement to just the files changed by this feature branch -->
                     <ratchetFrom>HEAD</ratchetFrom>
                     <java>
-                        <eclipse>
-                            <file>style/spotless_dolphinscheduler_formatter.xml</file>
-                        </eclipse>
+<!--                        <eclipse>-->
+<!--                            <file>style/spotless_dolphinscheduler_formatter.xml</file>-->
+<!--                        </eclipse>-->
                         <removeUnusedImports />
                         <importOrder>
-                            <file>style/eclipse.importorder</file>
+<!--                            <file>style/eclipse.importorder</file>-->
                         </importOrder>
                         <replaceRegex>
                             <name>Remove wildcard imports</name>

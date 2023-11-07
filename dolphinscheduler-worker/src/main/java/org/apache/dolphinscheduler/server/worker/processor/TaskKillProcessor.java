@@ -34,6 +34,7 @@ import org.apache.dolphinscheduler.remote.utils.Pair;
 import org.apache.dolphinscheduler.server.worker.message.MessageRetryRunner;
 import org.apache.dolphinscheduler.server.worker.runner.WorkerManagerThread;
 import org.apache.dolphinscheduler.server.worker.runner.WorkerTaskExecuteRunnable;
+import org.apache.dolphinscheduler.server.worker.utils.YarnAPi;
 import org.apache.dolphinscheduler.service.log.LogClient;
 import org.apache.dolphinscheduler.service.utils.LoggerUtils;
 import org.apache.dolphinscheduler.service.utils.ProcessUtils;
@@ -241,8 +242,8 @@ public class TaskKillProcessor implements NettyRequestProcessor {
                 logger.info("The appId is empty");
                 return Pair.of(true, Collections.emptyList());
             }
-
             ProcessUtils.cancelApplication(appIds, logger, tenantCode, executePath);
+            YarnAPi.cancelApplication(host,appIds, logger);
             return Pair.of(true, appIds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
