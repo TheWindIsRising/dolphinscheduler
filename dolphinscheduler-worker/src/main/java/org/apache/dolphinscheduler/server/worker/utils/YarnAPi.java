@@ -25,9 +25,11 @@ public class YarnAPi {
      * @param logger 日志
      */
 
-//    @Value("${yarnHostName}")
-//    private static String yarnHostName;
+    /*@Value("${yarnHostName}")
+    private static String yarnHostName;*/
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
+        String yarnHostName = System.getenv("yarnHostName");
+
         if (appIds == null || appIds.isEmpty()) {
             return;
         }
@@ -37,15 +39,15 @@ public class YarnAPi {
                 TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
 
                 if (!applicationStatus.isFinished()) {
-                    String filePath = "/opt/soft/resourcemanager.txt";
-                    BufferedReader reader = new BufferedReader(new FileReader(filePath));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        // 处理每一行的值
-                        logger.info("=====================line：====" + line + "==========================");
-                    }
-//                    logger.info("=====================yarnHostName：====" + yarnHostName + "==========================");
-                    String url = "http://172.16.30.216:8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
+//                    String filePath = "/opt/soft/resourcemanager.txt";
+//                    BufferedReader reader = new BufferedReader(new FileReader(filePath));
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        // 处理每一行的值
+//                        logger.info("=====================line：====" + line + "==========================");
+//                    }
+                    logger.info("=====================yarnHostName：====" + yarnHostName + "==========================");
+                    String url = "http://" + yarnHostName + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
