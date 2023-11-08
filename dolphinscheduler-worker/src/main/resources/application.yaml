@@ -52,6 +52,7 @@ registry:
     digest: ~
 
 worker:
+  resourcemanager: 127.0.0.1
   # worker listener port
   listen-port: 1234
   # worker execute thread number to limit task instances in parallel
@@ -77,8 +78,6 @@ worker:
     # The max waiting time to reconnect to registry if you set the strategy to waiting
     max-waiting-time: 100s
   task-execute-threads-full-policy: REJECT
-
-resourcemanager: 127.0.0.1
 
 server:
   port: 1235

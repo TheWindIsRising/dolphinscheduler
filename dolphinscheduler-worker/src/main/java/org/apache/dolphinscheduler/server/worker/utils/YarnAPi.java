@@ -22,7 +22,7 @@ public class YarnAPi {
      * @param logger 日志
      */
 
-    @Value("${resourcemanager}")
+    @Value("${worker.resourcemanager}")
     private static String hostName;
 
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
@@ -36,7 +36,7 @@ public class YarnAPi {
 
                 if (!applicationStatus.isFinished()) {
                     logger.info("=====================host：====" + host + "==========================");
-                    logger.info("=====================str：====" + hostName + "==========================");
+                    logger.info("=====================hostName：====" + hostName + "==========================");
                     String url = "http://" + hostName + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");
                     //查询状态
