@@ -1,14 +1,15 @@
 package org.apache.dolphinscheduler.server.worker.utils;
 
+
 import org.apache.dolphinscheduler.plugin.task.api.enums.TaskExecutionStatus;
 import org.apache.dolphinscheduler.remote.utils.Host;
 import org.apache.dolphinscheduler.service.storage.impl.HadoopUtils;
 import org.slf4j.Logger;
-
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
 import java.util.List;
@@ -16,11 +17,14 @@ import java.util.List;
 public class YarnAPi {
 
     /**
-     *
      * @param host 主机
      * @param appIds applocations
      * @param logger 日志
      */
+
+    @Value("${resourcemanager}")
+    private static String str;
+
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
         if (appIds == null || appIds.isEmpty()) {
             return;
@@ -31,10 +35,10 @@ public class YarnAPi {
                 TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
 
                 if (!applicationStatus.isFinished()) {
-                    logger.info("=====================host：===="+host+"==========================");
-                    String ip = host.getIp();
-                    String url = "http://" + ip + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
-                    logger.info("======================url:===="+url+"==========================");
+                    logger.info("=====================host：====" + host + "==========================");
+                    logger.info("=====================str：====" + str + "==========================");
+                    String url = "http://" + str + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
+                    logger.info("======================url:====" + url + "==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
                     // 发送请求并获取响应结果
@@ -45,7 +49,7 @@ public class YarnAPi {
                     Map<String, Object> resultMap = JSONUtil.parseObj(jsonStr);
                     // 输出结果
                     String status = resultMap.get("state").toString();
-                    if(!status.equals("FAILED") && !status.equals("KILLED")){
+                    if (!status.equals("FAILED") && !status.equals("KILLED")) {
                         HttpRequest httpRequest = HttpRequest.put(url);
                         // 发送请求并获取响应结果
                         JSONObject jsonObject = new JSONObject();

@@ -78,6 +78,8 @@ worker:
     max-waiting-time: 100s
   task-execute-threads-full-policy: REJECT
 
+resourcemanager: 127.0.0.1
+
 server:
   port: 1235
 
@@ -114,3 +116,5 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/dolphinscheduler
     username: root
     password: root
+
+
