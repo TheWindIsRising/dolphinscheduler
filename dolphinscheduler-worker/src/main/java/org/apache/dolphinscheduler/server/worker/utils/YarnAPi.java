@@ -22,8 +22,6 @@ public class YarnAPi {
      * @param logger 日志
      */
 
-    @Value("${worker.resourcemanager}")
-    private static String str;
     @Value("${resourcemanager}")
     private static String hostName;
 
@@ -38,9 +36,8 @@ public class YarnAPi {
 
                 if (!applicationStatus.isFinished()) {
                     logger.info("=====================host：====" + host + "==========================");
-                    logger.info("=====================str：====" + str + "==========================");
                     logger.info("=====================str：====" + hostName + "==========================");
-                    String url = "http://" + str + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
+                    String url = "http://" + hostName + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
@@ -52,6 +49,7 @@ public class YarnAPi {
                     Map<String, Object> resultMap = JSONUtil.parseObj(jsonStr);
                     // 输出结果
                     String status = resultMap.get("state").toString();
+                    logger.info("=========================目前任务状态为：", status);
                     if (!status.equals("FAILED") && !status.equals("KILLED")) {
                         HttpRequest httpRequest = HttpRequest.put(url);
                         // 发送请求并获取响应结果
@@ -65,7 +63,7 @@ public class YarnAPi {
                         // 将JSON字符串转换为Map对象，方便后续处理
                         Map<String, Object> map = JSONUtil.parseObj(str);
                         // 输出结果
-                        logger.info("=========================目前任务状态为：", map.toString());
+                        logger.info("=========================调用Yarn Api修改任务状态为：", map.toString());
                     }
                 }
             } catch (Exception e) {
