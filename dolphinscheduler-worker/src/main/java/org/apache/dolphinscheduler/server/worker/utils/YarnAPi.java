@@ -24,6 +24,8 @@ public class YarnAPi {
 
     @Value("${worker.resourcemanager}")
     private static String hostName;
+    @Value("${yarnHostName}")
+    private static String yarnHostName;
 
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
         if (appIds == null || appIds.isEmpty()) {
@@ -37,6 +39,7 @@ public class YarnAPi {
                 if (!applicationStatus.isFinished()) {
                     logger.info("=====================host：====" + host + "==========================");
                     logger.info("=====================hostName：====" + hostName + "==========================");
+                    logger.info("=====================yarnHostName：====" + yarnHostName + "==========================");
                     String url = "http://172.16.30.216:8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");
                     //查询状态
