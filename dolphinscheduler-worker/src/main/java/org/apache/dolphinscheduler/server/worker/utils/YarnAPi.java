@@ -44,7 +44,6 @@ public class YarnAPi {
                         // 处理每一行的值
                         logger.info("=====================line：====" + line + "==========================");
                     }
-                    logger.info("=====================host：====" + host + "==========================");
 //                    logger.info("=====================yarnHostName：====" + yarnHostName + "==========================");
                     String url = "http://172.16.30.216:8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");

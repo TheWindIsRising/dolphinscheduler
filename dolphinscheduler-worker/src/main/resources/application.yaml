@@ -53,7 +53,6 @@ registry:
     digest: ~
 
 worker:
-  resourcemanager: 127.0.0.1
   # worker listener port
   listen-port: 1234
   # worker execute thread number to limit task instances in parallel
