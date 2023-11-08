@@ -37,7 +37,7 @@ public class YarnAPi {
                 if (!applicationStatus.isFinished()) {
                     logger.info("=====================host：====" + host + "==========================");
                     logger.info("=====================hostName：====" + hostName + "==========================");
-                    String url = "http://" + hostName + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
+                    String url = "http://172.16.30.216:8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("======================url:====" + url + "==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
