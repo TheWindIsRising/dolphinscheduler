@@ -25,14 +25,16 @@ import org.apache.dolphinscheduler.remote.exceptions.RemotingException;
 public interface MessageSender<T extends BaseCommand> {
 
     /**
-     * Send the message
-     *
+     * @param message Send the message
      * @throws RemotingException Cannot connect to the target host.
      */
     void sendMessage(T message) throws RemotingException;
 
     /**
      * Build the message from task context and message received address.
+     * @param taskExecutionContext
+     * @param messageReceiverAddress
+     * @return
      */
     T buildMessage(TaskExecutionContext taskExecutionContext, String messageReceiverAddress);
 

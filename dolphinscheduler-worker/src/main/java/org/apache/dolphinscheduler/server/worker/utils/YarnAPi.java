@@ -12,14 +12,15 @@ import cn.hutool.json.JSONUtil;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Map;
 
-/**
- * @Author jxz
- * @Date 2023/11/7 10:59
- * @Version v1.0
- **/
 public class YarnAPi {
+
+    /**
+     *
+     * @param host 主机
+     * @param appIds applocations
+     * @param logger 日志
+     */
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
         if (appIds == null || appIds.isEmpty()) {
             return;
@@ -30,9 +31,8 @@ public class YarnAPi {
                 TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
 
                 if (!applicationStatus.isFinished()) {
-                    System.setProperty("HADOOP_USER_NAME", "hdfs");
                     String ip = host.getIp();
-                    String url = "http://" + ip + ":8088/ws/v1/cluster/apps/" + appId + "/state";
+                    String url = "http://" + ip + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
                     logger.info("========================="+url+"==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
