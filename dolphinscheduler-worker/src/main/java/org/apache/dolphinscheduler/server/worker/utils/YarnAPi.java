@@ -57,7 +57,7 @@ public class YarnAPi {
                         // 将JSON字符串转换为Map对象，方便后续处理
                         Map<String, Object> map = JSONUtil.parseObj(str);
                         // 输出结果
-                        logger.info("kill cmd:{}", map.toString());
+                        logger.info("=========================目前任务状态为：", map.toString());
                     }
                 }
             } catch (Exception e) {
