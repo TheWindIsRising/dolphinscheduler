@@ -31,9 +31,10 @@ public class YarnAPi {
                 TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
 
                 if (!applicationStatus.isFinished()) {
+                    logger.info("=====================host：===="+host+"==========================");
                     String ip = host.getIp();
                     String url = "http://" + ip + ":8088/ws/v1/cluster/apps/" + appId + "/state?user.name=hdfs";
-                    logger.info("========================="+url+"==========================");
+                    logger.info("======================url:===="+url+"==========================");
                     //查询状态
                     HttpRequest request = HttpRequest.get(url);
                     // 发送请求并获取响应结果
