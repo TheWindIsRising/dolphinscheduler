@@ -30,11 +30,13 @@ public class YarnAPi {
         String cookie = System.getenv("cookie"); //JSESSIONID=1xvqyk3z2z3qi1slj01ehf7l6w
 
         if (appIds == null || appIds.isEmpty()) {
+            logger.error("==============================appIds为空=================================");
             return;
         }
 
         for (String appId : appIds) {
             try {
+                logger.error("==============================appIds不为空=================================");
                 TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
                 if (!applicationStatus.isFinished()) {
                     logger.info("=====================yarnHostName：" + yarnHostName + "==========================");
@@ -50,7 +52,6 @@ public class YarnAPi {
                             break;
                         default:
                             logger.error("获取不到大数据平台名称");
-                            throw new NullException("获取不到大数据平台名称");
                     }
                 }
             } catch (Exception e) {
@@ -87,7 +88,7 @@ public class YarnAPi {
                 }
             }
         } else {
-            throw new NullException("请检查参数是否正确或Cookie是否存在");
+            logger.error("请检擦参数或cookie失效");
         }
     }
 
