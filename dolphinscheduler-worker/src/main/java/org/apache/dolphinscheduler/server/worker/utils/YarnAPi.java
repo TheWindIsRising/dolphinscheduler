@@ -52,6 +52,7 @@ public class YarnAPi {
                             break;
                         default:
                             logger.error("获取不到大数据平台名称");
+                            break;
                     }
                 }
             } catch (Exception e) {
