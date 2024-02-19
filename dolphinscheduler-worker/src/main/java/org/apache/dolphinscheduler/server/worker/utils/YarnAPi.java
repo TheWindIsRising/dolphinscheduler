@@ -12,6 +12,11 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.List;
 
@@ -26,8 +31,9 @@ public class YarnAPi {
     public static void cancelApplication(Host host, List<String> appIds, Logger logger) {
         String yarnHostName = System.getenv("yarnHostName");
         String principal = System.getenv("principalName");
-        String serviceCluster = System.getenv("serviceCluster");
-        String cookie = System.getenv("cookie"); //JSESSIONID=1xvqyk3z2z3qi1slj01ehf7l6w
+        String serviceCluster = System.getenv("serviceCluster"); //huawei  And  ambari
+        String bigdataEnvPath = System.getenv("bigdataEnvPath"); //opt/soft/hadoopclient/bigdata_env
+        String keytabPath = System.getenv("keytabPath"); //opt/soft/key/user.keytab
 
         if (appIds == null || appIds.isEmpty()) {
             logger.error("==============================appIds为空=================================");
@@ -36,25 +42,26 @@ public class YarnAPi {
 
         for (String appId : appIds) {
             try {
-                logger.error("==============================appIds不为空=================================");
-                TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
-                if (!applicationStatus.isFinished()) {
-                    logger.info("=====================yarnHostName：" + yarnHostName + "==========================");
-                    String url = yarnHostName + appId + "/state?user.name=" + principal;
-                    logger.info("======================url：" + url + "==========================");
-                    //开关 区分华为FI 与ambari
-                    switch (serviceCluster) {
-                        case "huawei":
-                            handleHuaweiServiceCluster(url, logger, cookie);
-                            break;
-                        case "ambari":
-                            handleAmbariServiceCluster(url, logger);
-                            break;
-                        default:
-                            logger.error("获取不到大数据平台名称");
-                            break;
-                    }
+                logger.info("==============================appIds不为空=================================");
+//                TaskExecutionStatus applicationStatus = HadoopUtils.getInstance().getApplicationStatus(appId);
+//                if (!applicationStatus.isFinished()) {
+                logger.info("=====================yarnHostName：" + yarnHostName + "==========================");
+                String url = yarnHostName + appId + "/state?user.name=" + principal;
+                logger.info("======================url：" + url + "==========================");
+                //开关 区分华为FI 与ambari
+                switch (serviceCluster) {
+                    case "huawei":
+//                            handleHuaweiServiceCluster(url, logger, cookie);
+                        handleHuaweiServiceCluster(bigdataEnvPath, keytabPath, principal, logger, appId);
+                        break;
+                    case "ambari":
+                        handleAmbariServiceCluster(url, logger);
+                        break;
+                    default:
+                        logger.error("获取不到大数据平台名称");
+                        break;
                 }
+//                }
             } catch (Exception e) {
                 logger.error("Get yarn application app id [{}] status failed", appId, e);
             }
@@ -90,6 +97,42 @@ public class YarnAPi {
             }
         } else {
             logger.error("请检擦参数或cookie失效");
+        }
+    }
+
+    private static void handleHuaweiServiceCluster(String bigdataEnvPath, String keytabPath, String principal, Logger logger, String appid) {
+        Process process = null;
+        try {
+            logger.info("=============执行命令=============");
+            String[] cmd = new String[]{"/bin/bash", "-c", "source " + bigdataEnvPath + " && kinit -kt " + keytabPath + " " + principal + " && yarn application -kill " + appid};
+            logger.info("=============命令：" + Arrays.toString(cmd));
+            process = Runtime.getRuntime()
+                    .exec(cmd);
+            process.waitFor();
+            logger.info("=============执行成功=============");
+            // 获取命令执行结果
+            printSuccessResults(process, logger);
+            printErrorResults(process, logger);
+        } catch (IOException | InterruptedException e) {
+            logger.error(" 请检查客户端是否安装,bigdataEnvPath And keytabPath And principal 路径、用户是否正确" + e);
+        }
+    }
+
+    // 读取输出流
+    public static void printSuccessResults(Process process, Logger logger) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+            logger.info("=============运行成功结果：" + line + ":=============");
+        }
+    }
+
+    // 读取错误输出流
+    public static void printErrorResults(Process process, Logger logger) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+            logger.error("=============运行失败结果：" + line + ":=============");
         }
     }
 
